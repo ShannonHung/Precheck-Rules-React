@@ -5,12 +5,14 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
-import "primereact/resources/themes/lara-light-indigo/theme.css"; // 或其他主題
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+
+import "react-bootstrap-typeahead/css/Typeahead.css";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { FieldListLoader } from "./pages/FieldListPage/FieldListLoader";
 import JsonPage from "./pages/FieldListPage/FieldListPage";
-import FieldPage from "./pages/FieldPage";
+import FieldPage from "./pages/FieldEditPage";
 import FilesPage from "./pages/FilesPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Root from "./pages/Root";

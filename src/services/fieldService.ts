@@ -11,7 +11,32 @@ export default class FieldService {
 
   static async getParentFields(path: string = ""): Promise<ParentField[]> {
     return axios
-      .get<Field[]>("/fields/parents", { params: { path } })
+      .get<ParentField[]>("/fields/parents", { params: { path } })
+      .then((res) => res.data);
+  }
+
+  static async createField(
+    path: string = "",
+    parent_path: string = "",
+    new_field: Field
+  ): Promise<Field> {
+    return axios
+      .post("/field", new_field, {
+        params: { path, parent_path },
+      })
+      .then((res) => res.data);
+  }
+
+  static async deleteField(
+    path: string = "",
+    parent_path: string = "",
+    target_field: Field
+  ): Promise<Field[]> {
+    return axios
+      .delete("/field", {
+        params: { path, parent_path },
+        data: target_field, // body 放在 data
+      })
       .then((res) => res.data);
   }
 }

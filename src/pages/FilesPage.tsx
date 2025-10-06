@@ -49,6 +49,7 @@ function FilesPage(): JSX.Element {
         setFlashMessage({ type: "success", message: res.data.message })
         fetchFileList()
       }, (err) => {
+        console.log("delete file", err.response.data.detail)
         setFlashMessage({ type: "danger", message: handleAxiosError(err) });
       })
   }

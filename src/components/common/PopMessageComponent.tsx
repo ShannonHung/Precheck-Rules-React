@@ -5,12 +5,14 @@ interface PopoverIconProps {
   content?: string;
   icon?: string;
   placement?: "top" | "bottom" | "left" | "right";
+  color?: "danger" | "warning";
 }
 
 const PopoverIcon: React.FC<PopoverIconProps> = ({
   content = "No details provided.",
   icon = "bi-patch-question",
   placement = "top",
+  color = "danger",
 }) => {
   const spanRef = useRef<HTMLSpanElement>(null);
 
@@ -34,7 +36,7 @@ const PopoverIcon: React.FC<PopoverIconProps> = ({
 
   return (
     //就是告訴 React：「等這個 <span> 渲染完成後，把它的 DOM 節點存到 spanRef.current」。
-    <span ref={spanRef} className="text-danger m-1" style={{ cursor: "pointer" }}>
+    <span ref={spanRef} className={`text-${color} m-1`} style={{ cursor: "pointer" }}>
       <i className={`bi ${icon}`} />
     </span>
   );

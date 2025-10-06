@@ -19,11 +19,7 @@ export function FieldListLoader({
     FieldService.getParentFields(path),
   ])
     .then(([fields, parentFields]) => {
-      if (!fields || fields.length === 0) {
-        throw new Response("Fields not found", { status: 404 });
-      }
-
-      return { fields, parentFields }; // ✅ 型別自動推斷
+      return { fields, parentFields };
     })
     .catch((error) => {
       console.error("Error loading fields:", error);
