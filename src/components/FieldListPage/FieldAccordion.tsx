@@ -1,13 +1,13 @@
 import { Column } from 'primereact/column';
 import { TreeTable } from 'primereact/treetable';
 import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Field } from '../../model/Field';
 import PopoverIcon from '../common/PopMessageComponent';
 
-
 // 將你的 Field[] 轉成 TreeNode[]
-const mapToTreeNode = (fields: Field[], parentPath = '') =>
-  fields.map((f) => {
+const mapToTreeNode: any = (fields: Field[], parentPath = '') =>
+  fields.map((f: any) => {
     const currentPath = parentPath ? `${parentPath}.${f.key}` : f.key;
     return {
       key: currentPath,
@@ -23,10 +23,16 @@ const mapToTreeNode = (fields: Field[], parentPath = '') =>
       children: f.children ? mapToTreeNode(f.children, currentPath) : [],
     };
   });
-
-export default function FieldTreeTable({ onClickDelete, fieldList }) {
+interface FieldTreeTable {
+  onClickDelete: (parentPath: any, target: any) => void;
+  fieldList: Field[];
+}
+export default function FieldTreeTable({ onClickDelete, fieldList }: FieldTreeTable) {
   const [nodes, setNodes] = useState(mapToTreeNode(fieldList));
   const [globalFilter, setGlobalFilter] = useState('');
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const pathParam = searchParams.get("path");
 
   useEffect(() => {
     setNodes(mapToTreeNode(fieldList));
@@ -60,16 +66,6 @@ export default function FieldTreeTable({ onClickDelete, fieldList }) {
           content={`When ${rowData.data.condition.conditions.length} conditions match, turn to 'Required'.`}
           icon="bi-exclamation-triangle-fill"
         />
-        // <span
-        //   className="text-danger ms-2"
-        //   data-bs-custom-class="custom-popover"
-        //   data-bs-trigger="hover"
-        //   data-bs-content={`When ${rowData.data.condition.conditions.length} conditions match, turn to 'Required'.`}
-        //   data-bs-toggle="popover"
-        //   data-bs-placement="right"
-        // >
-        //   <i className="bi bi-exclamation-triangle-fill"></i>
-        // </span>
       )}
     </div>
   );
@@ -77,7 +73,17 @@ export default function FieldTreeTable({ onClickDelete, fieldList }) {
   const actionBodyTemplate = (rowData: any) => {
     return (
       <div className="d-flex gap-2">
-        <a className="btn btn-primary btn-sm"><i className="bi bi-pencil-fill"></i></a>
+        <button className="btn btn-primary btn-sm" onClick={(e) => {
+          const field_path = rowData.key ? rowData.key : "";
+          const parent_path = rowData.data.parent_path ? rowData.data.parent_path : "";
+          console.log("Edit Click:", rowData)
+          console.log("parent:", parent_path)
+          navigate(
+            `/field?path=${pathParam}&field_path=${encodeURIComponent(field_path)}&parent_path=${encodeURIComponent(parent_path)}`
+          );
+        }}>
+          <i className="bi bi-pencil-fill"></i>
+        </button>
         <button className="btn btn-outline-danger btn-sm" onClick={(e) => {
           if (confirm('Are you sure you want to delete this field?')) {
             console.log("Delete Yes", rowData.data)
@@ -104,7 +110,7 @@ export default function FieldTreeTable({ onClickDelete, fieldList }) {
         />
       </div>
       <div className="card-body">
-        <TreeTable value={nodes} globalFilter={globalFilter} tableStyle={{ minWidth: '50rem' }} paginator rows={10} sortMode="multiple">
+        <TreeTable value={nodes} globalFilter={globalFilter} tableStyle={{ minWidth: '50rem', borderCollapse: 'collapse' }} paginator rows={10} sortMode="multiple" >
           <Column field="key" header="Field" expander sortable style={{ width: '20%' }} />
           <Column field="description" header="Description" sortable style={{ width: '30%' }} />
           <Column field="multi_type" header="Multi Type" body={typeBodyTemplate} sortable style={{ width: '25%' }} />

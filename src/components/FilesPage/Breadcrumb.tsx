@@ -1,6 +1,12 @@
-import { JSX } from "react";
+import { Dispatch, JSX, SetStateAction } from "react";
 
-function BreadCrumb({ setPathParts, onClickFolder, pathParts }): JSX.Element {
+interface BreadCrumbProps {
+  setPathParts: Dispatch<SetStateAction<string[]>>;
+  onClickFolder: (index: number) => void;
+  pathParts: string[];
+}
+
+function BreadCrumb({ setPathParts, onClickFolder, pathParts }: BreadCrumbProps): JSX.Element {
 
   return (<nav className="m-2">
     Current Folder:

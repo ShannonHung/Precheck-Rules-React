@@ -1,6 +1,7 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./styles/style.css";
 
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
@@ -10,9 +11,10 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { FieldEditLoader } from "./pages/FieldEditPage/FieldEditLoader";
+import FieldEditPage from "./pages/FieldEditPage/FieldEditPage";
 import { FieldListLoader } from "./pages/FieldListPage/FieldListLoader";
 import JsonPage from "./pages/FieldListPage/FieldListPage";
-import FieldPage from "./pages/FieldEditPage";
 import FilesPage from "./pages/FilesPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Root from "./pages/Root";
@@ -35,8 +37,9 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
       {
-        path: "/field/:field",
-        element: <FieldPage />,
+        path: "/field",
+        element: <FieldEditPage />,
+        loader: FieldEditLoader,
         errorElement: <NotFoundPage />,
       },
     ],

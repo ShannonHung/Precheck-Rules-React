@@ -83,7 +83,7 @@ function FilesPage(): JSX.Element {
 
           <BreadCrumb
             setPathParts={setPathParts}
-            onClickFolder={() => handleBreadcrumbClick}
+            onClickFolder={handleBreadcrumbClick}
             pathParts={pathParts} />
 
           <FileShow

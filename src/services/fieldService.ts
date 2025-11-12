@@ -15,6 +15,14 @@ export default class FieldService {
       .then((res) => res.data);
   }
 
+  static async getField(field_path: string, path: string = ""): Promise<Field> {
+    return axios
+      .get(`/field`, {
+        params: { path, field_path },
+      })
+      .then((res) => res.data);
+  }
+
   static async createField(
     path: string = "",
     parent_path: string = "",

@@ -1,8 +1,11 @@
-/* 引入 Bootstrap CSS */
-@import url("bootstrap.min.css");
-
-/* 引入 Bootstrap Icons */
-@import url("bootstrap-icons.min.css");
+/* field list tree table style */
+.p-treetable .p-treetable-tbody > tr:hover {
+  background-color: #f0f8ff;
+}
+.p-treetable .p-treetable-tbody > tr {
+  border-top: 1px solid #e9ecef; /* 上邊線 */
+  border-bottom: 1px solid #e9ecef; /* 下邊線 */
+}
 
 /* 自定義樣式 */
 .custom-popover {
@@ -11,7 +14,7 @@
   --bs-popover-header-bg: #2a7bf5;
   --bs-popover-header-color: var(--bs-white);
   --bs-popover-body-padding-x: 1rem;
-  --bs-popover-body-padding-y: .5rem;
+  --bs-popover-body-padding-y: 0.5rem;
 }
 
 .condition-item {

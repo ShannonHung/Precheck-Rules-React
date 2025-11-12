@@ -5,6 +5,7 @@ import Header from "../../components/common/Header";
 import FieldTreeTable from "../../components/FieldListPage/FieldAccordion";
 import FieldCreate from "../../components/FieldListPage/FieldCreate";
 import { Field } from "../../model/Field";
+import { FieldType } from "../../model/FieldType";
 import { FlashMessage } from "../../model/FlashMessage";
 import { ParentField } from "../../model/ParentField";
 import handleAxiosError from "../../services/axiosErrorHandler";
@@ -16,7 +17,7 @@ export default function JsonPage() {
   const [flashMessage, setFlashMessage] = useState<FlashMessage | null>(null);
   const [searchParams] = useSearchParams();
   const [fieldList, setFieldList] = useState<Field[]>(data.fields)
-  const [parentFields, setParentFields] = useState(data.parentFields)
+  const [parentFields, setParentFields] = useState<ParentField[]>(data.parentFields)
   const pathParam = searchParams.get("path");
 
   const fetchFieldList = () => {
@@ -35,7 +36,9 @@ export default function JsonPage() {
       })
       .catch((err) => setFlashMessage({ type: "danger", message: handleAxiosError(err) }));
   }
-
+  const hasItemType = (types: FieldType[]) => {
+    return types.includes(FieldType.LIST) || types.includes(FieldType.OBJ)
+  }
   const handleCreateFieldClick = (selectedParent: string, target: Field) => {
     FieldService.createField(pathParam || "", selectedParent, target)
       .then(() => {

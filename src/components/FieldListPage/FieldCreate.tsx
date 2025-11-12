@@ -1,10 +1,14 @@
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { Field } from "../../model/Field";
 import { FieldType, FieldTypes } from "../../model/FieldType";
+import { ParentField } from "../../model/ParentField";
 import PopoverIcon from "../common/PopMessageComponent";
-
-function FieldCreate({ onClickCreate, parentFieldList }): JSX.Element {
+interface FieldCreateProps {
+  onClickCreate: (selectedParent: string, newField: any) => void;
+  parentFieldList: ParentField[];
+}
+function FieldCreate({ onClickCreate, parentFieldList }: FieldCreateProps): JSX.Element {
   const [showItemType, setShowItemType] = useState(false);
 
   const [selectedParent, setSelectedParent] = useState("");
@@ -20,10 +24,11 @@ function FieldCreate({ onClickCreate, parentFieldList }): JSX.Element {
 
   const itemTypes = FieldTypes.getItemTypes();
   const allTypes = FieldTypes.getAll();
-
+  const availableOptions = allTypes.filter(
+    (t) => !selectedTypeList.includes(t.value as FieldType)
+  );
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("submit trigger")
     event.preventDefault();
     const newField: Field = {
       key: fieldName,
@@ -36,7 +41,13 @@ function FieldCreate({ onClickCreate, parentFieldList }): JSX.Element {
       condition: [],
       children: [],
     };
+    if (showItemType && selectedItemTypeList.length === 0) {
+      alert("Item Type is required");
+      return;
+    }
+    // 如果 item type 必填時
     onClickCreate(selectedParent, newField);
+
     // 清空輸入
     setSelectedParent("");
     setFieldName("");
@@ -47,6 +58,25 @@ function FieldCreate({ onClickCreate, parentFieldList }): JSX.Element {
     setRequired(false);
   };
 
+  const hasItemType = (types: FieldType[]) => {
+    return types.includes(FieldType.LIST) || types.includes(FieldType.OBJ)
+  }
+  const selectedParentItemType = selectedParent
+    ? parentFieldList.find((p) => p.key === selectedParent)?.itemType
+    : null;
+
+  useEffect(() => {
+    if (selectedParentItemType) {
+      setSelectedTypeList(selectedParentItemType);
+    }
+  }, [selectedParentItemType]);
+  const restrictMultiType = () => {
+    if (selectedParentItemType) {
+      return selectedParentItemType.map((t) => ({ value: t, label: t }));
+    } else {
+      return selectedTypeList.map((t) => ({ value: t, label: t }));
+    }
+  };
 
   return (
     <div className="card mb-4">
@@ -74,9 +104,9 @@ function FieldCreate({ onClickCreate, parentFieldList }): JSX.Element {
                   onChange={(e) => setSelectedParent(e.target.value)}
                 >
                   <option value="">Root (.)</option>
-                  {parentFieldList.map((item) => (
+                  {parentFieldList.map((item: ParentField) => (
                     <option key={item.key} value={item.key}>
-                      {item.key} ({item.type})
+                      {item.key} ({item.type.join(", ")})
                     </option>
                   ))}
                 </select>
@@ -124,24 +154,25 @@ function FieldCreate({ onClickCreate, parentFieldList }): JSX.Element {
                   id="multi-type"
                   labelKey="label"
                   multiple
-                  options={allTypes.map((t) => ({ value: t.value, label: t.label }))}
-                  selected={selectedTypeList.map((t) => ({ value: t, label: t }))}
+                  options={availableOptions}
+                  selected={restrictMultiType()}
                   onChange={(selected) => {
                     const types = selected.map((s: any) => s.value);
                     setSelectedTypeList(types);
 
-                    if (types.includes(FieldType.LIST)) {
+                    if (hasItemType(types)) {
                       setShowItemType(true);
                     } else {
                       setShowItemType(false);
                     }
                   }}
+                  disabled={selectedParentItemType ? true : false}
                 />
               </div>
             </div>
 
             {/* Item Type */}
-            {showItemType && (
+            {hasItemType(selectedTypeList) && (
               <div className="col-md-2">
                 <div className="mb-3">
                   <label className="form-label">

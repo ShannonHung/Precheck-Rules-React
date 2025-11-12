@@ -11,7 +11,7 @@ export interface Field {
   regex: string;
   regex_enabled: boolean;
   required: boolean;
-  condition: FieldCondition[];
+  condition: FieldCondition;
   children: Field[];
   path?: string[];
 }
